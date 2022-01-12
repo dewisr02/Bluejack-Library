@@ -1,0 +1,103 @@
+CREATE DATABASE BluejackLibrary
+
+GO
+USE BluejackLibrary
+
+CREATE TABLE Staff(
+	StaffID CHAR(5) PRIMARY KEY CHECK(StaffID LIKE 'SF[0-9][0-9][0-9]'),
+	StaffName VARCHAR(255) NOT NULL,
+	StaffGender VARCHAR(8) CHECK(StaffGender IN ('Male','Female')),
+	StaffAddress VARCHAR(255) NOT NULL,
+	StaffPhone VARCHAR(15) CHECK(StaffPhone LIKE '+62%'),
+	StaffSalary INT NOT NULL
+)
+
+CREATE TABLE Student(
+	StudentID CHAR(5) PRIMARY KEY CHECK(StudentID LIKE 'ST[0-9][0-9][0-9]'),
+	StudentName VARCHAR(255) NOT NULL,
+	StudentGender VARCHAR(8) CHECK(StudentGender IN ('Male','Female')),
+	StudentAddress VARCHAR(255) NOT NULL,
+	StudentEmail VARCHAR(255) CHECK(StudentEmail like '%@%')
+)
+
+CREATE TABLE Donator(
+	DonatorID CHAR(5) PRIMARY KEY CHECK(DonatorID LIKE 'DR[0-9][0-9][0-9]'),
+	DonatorName VARCHAR(255) CHECK(LEN(DonatorName) > 1),
+	DonatorGender VARCHAR(8) CHECK(DonatorGender IN ('Male','Female')),
+	DonatorAddress VARCHAR(255) NOT NULL,
+	DonatorPhone VARCHAR(15) CHECK(DonatorPhone LIKE '+62%')
+)
+
+CREATE TABLE Category(
+	BookCategoryID CHAR(5)PRIMARY KEY CHECK(BookCategoryID LIKE 'BC[0-9][0-9][0-9]'),
+	BookCategoryName VARCHAR(255) NOT NULL
+)
+
+CREATE TABLE Book(
+	BookID CHAR(5) PRIMARY KEY CHECK(BookID LIKE 'BK[0-9][0-9][0-9]'),
+	BookTitle VARCHAR(255) NOT NULL,
+	PublishDate DATE NOT NULL,
+	Stock VARCHAR(255) NOT NULL,
+	BookRating VARCHAR(255) NOT NULL,
+	BookCategoryID CHAR(5) FOREIGN KEY REFERENCES Category(BookCategoryID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL,
+)
+
+CREATE TABLE DonationTransaction(
+	DonationTransactionID CHAR(5) PRIMARY KEY CHECK(DonationTransactionID LIKE 'DT[0-9][0-9][0-9]'),
+	StaffID CHAR(5) FOREIGN KEY REFERENCES Staff(StaffID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL,
+	DonatorID CHAR(5) FOREIGN KEY REFERENCES Donator(DonatorID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL,
+	DonationDate DATE NOT NULL
+)
+
+CREATE TABLE DonationTransactionDetail(
+	DonationTransactionID CHAR(5) FOREIGN KEY REFERENCES DonationTransaction(DonationTransactionID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL,
+	BookID CHAR(5) FOREIGN KEY REFERENCES Book(BookID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL,
+	Quantity INT NOT NULL CHECK(Quantity BETWEEN 10 AND 500),
+	PRIMARY KEY(DonationTransactionID, BookID)
+)
+
+CREATE TABLE BorrowTransaction(
+	BorrowTransactionID CHAR(5) PRIMARY KEY CHECK(BorrowTransactionID LIKE 'BT[0-9][0-9][0-9]'),
+	StudentID CHAR(5) FOREIGN KEY REFERENCES Student(StudentID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL,
+	StaffID CHAR(5) FOREIGN KEY REFERENCES Staff(StaffID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL,
+	BorrowTransactionDate DATE NOT NULL
+)
+
+CREATE TABLE BorrowTransactionDetail(
+	BorrowTransactionID CHAR(5) FOREIGN KEY REFERENCES BorrowTransaction(BorrowTransactionID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL,
+	BookID CHAR(5) FOREIGN KEY REFERENCES Book(BookID) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL,
+	ReturnDate DATE NOT NULL,
+	PRIMARY KEY(BorrowTransactionID, BookID)
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
